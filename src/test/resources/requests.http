@@ -1,0 +1,102 @@
+###
+# @name = Get Users
+GET http://localhost:8080/api/v1/users
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+
+# @name = Get User
+GET http://localhost:8080/api/v1/users/1
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+
+    client.test("Response content-type is text", function() {
+        var type = response.contentType.mimeType;
+        client.assert(type === "application/hal+json", "Expected 'application/hal+json' but received '" + type + "'");
+    });
+%}
+
+###
+
+# @name = Create User
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name" : "JavaScript",
+  "description": "This is a JavaScript user",
+  "category" : "EVENTS"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+    client.global.set("id", response.body.id);
+%}
+
+###
+# @name = Get Created User
+GET http://localhost:8080/api/v1/users/{{id}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+# @name = Update User
+PUT http://localhost:8080/api/v1/users/{{id}}
+Content-Type: application/json
+
+{
+  "name" : "JavaScriptyytyu",
+  "description": "This is a JavaScript user.",
+  "category" : "PROGRAMMING"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+# @name = Get Updated User
+GET http://localhost:8080/api/v1/users/{{id}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+###
+
+# @name = Delete User
+DELETE http://localhost:8080/api/v1/users/{{id}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 204, "Response status is not 202");
+    });
+%}
+###
+
+# @name = Confirm User Deletion
+GET http://localhost:8080/api/v1/users/{{id}}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 404, "Response status is not 404");
+    });
+%}
+###
